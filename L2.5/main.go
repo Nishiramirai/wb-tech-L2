@@ -20,6 +20,10 @@ func test() *customError {
 func main() {
 	var err error
 	err = test()
+
+	// так как функция test возвращает nil указатель типа *customError,
+	// то внутри интерфейса err лежит nil значение типа *customError
+	// и сам интерфейс err равен nil
 	if err != nil {
 		println("error")
 		return
