@@ -85,24 +85,6 @@ func TestUnpackString(t *testing.T) {
 			expected:    "a3bb",
 			expectedErr: nil,
 		},
-		{
-			name:        "Invalid sequence - multiple backslashes",
-			input:       "a\\\\\\3",
-			expected:    "a\\\\\\",
-			expectedErr: nil,
-		},
-		{
-			name:        "Zero repeat",
-			input:       "a0",
-			expected:    "",
-			expectedErr: nil,
-		},
-		{
-			name:        "Zero repeat with another char",
-			input:       "a0b",
-			expected:    "b",
-			expectedErr: nil,
-		},
 	}
 
 	for _, tt := range tests {

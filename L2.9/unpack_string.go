@@ -1,14 +1,29 @@
 package unpack_string
 
+// Написать функцию Go, осуществляющую примитивную распаковку строки, содержащей повторяющиеся символы/руны.
+
+// Примеры работы функции:
+
+//     Вход: "a4bc2d5e"
+//     Выход: "aaaabccddddde"
+
+//     Вход: "abcd"
+//     Выход: "abcd" (нет цифр — ничего не меняется)
+
+//     Вход: "45"
+//     Выход: "" (некорректная строка, т.к. в строке только цифры — функция должна вернуть ошибку)
+
+//     Вход: ""
+//     Выход: "" (пустая строка -> пустая строка)
+
 import (
 	"errors"
-	"strconv"
 	"strings"
 	"unicode"
 )
 
 var (
-	ErrInvalidString = errors.New("Invalid string")
+	ErrInvalidString = errors.New("invalid string")
 )
 
 func UnpackString(str string) (string, error) {
@@ -16,16 +31,13 @@ func UnpackString(str string) (string, error) {
 		return "", nil
 	}
 
-	runeStr := []rune(str)
-	var prevRune rune
-	isEscaped := false
-
 	var result strings.Builder
 	result.Grow(len(str))
 
-	for i := 0; i < len(runeStr); i++ {
-		currentRune := runeStr[i]
+	var prevRune rune
+	var isEscaped bool
 
+	for _, currentRune := range str {
 		if isEscaped {
 			result.WriteRune(currentRune)
 			prevRune = currentRune
@@ -35,26 +47,29 @@ func UnpackString(str string) (string, error) {
 
 		if currentRune == '\\' {
 			isEscaped = true
-			prevRune = rune(0)
+			prevRune = 0
 			continue
 		}
 
 		if unicode.IsDigit(currentRune) {
-			if prevRune == rune(0) {
+			if prevRune == 0 {
 				return "", ErrInvalidString
 			}
-			// Руна уже проверена на isDigit, поэтому
-			// ошибку можно не обрабатывать
-			count, _ := strconv.Atoi(string(currentRune))
+
+			count := int(currentRune - '0')
+
 			for k := 0; k < count-1; k++ {
 				result.WriteRune(prevRune)
 			}
-			prevRune = rune(0)
+			prevRune = 0
 		} else {
 			result.WriteRune(currentRune)
 			prevRune = currentRune
 		}
+	}
 
+	if isEscaped {
+		return "", ErrInvalidString
 	}
 
 	return result.String(), nil
