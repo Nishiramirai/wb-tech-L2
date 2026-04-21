@@ -15,22 +15,22 @@ func findAnagrams(words []string) map[string][]string {
 	firstWords := make(map[string]string)
 
 	for _, word := range words {
-		// 1. Приводим к нижнему регистру
+		// Приводим к нижнему регистру
 		lowerWord := strings.ToLower(word)
 
-		// 2. Создаем ключ (сортируем буквы)
+		// Создаем ключ (сортируем буквы)
 		runes := []rune(lowerWord)
 		sort.Slice(runes, func(i, j int) bool {
 			return runes[i] < runes[j]
 		})
 		sortedKey := string(runes)
 
-		// 3. Запоминаем первое встреченное слово для этой группы
+		// Запоминаем первое встреченное слово для этой группы
 		if _, exists := firstWords[sortedKey]; !exists {
 			firstWords[sortedKey] = lowerWord
 		}
 
-		// 4. Добавляем слово в группу
+		// Добавляем слово в группу
 		groups[sortedKey] = append(groups[sortedKey], lowerWord)
 	}
 
